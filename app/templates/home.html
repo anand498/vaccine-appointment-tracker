@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<script>
+$(document).ready(function() {
+  $("#add_symbol").click(function() {
+    $('.ui.modal').modal('show');
+  });
+
+  $("#save").click(function() {
+
+    var textareaContent = $("#symbols").val();
+    var symbols = textareaContent.split("\n");
+
+    for (var i = 0; i < symbols.length; ++i) {
+      console.log(symbols[i]);
+      
+      $.ajax({
+        url: '/stock',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ "symbol": symbols[i] }),
+        dataType: 'json'
+      });
+    }
+
+    $('.ui.modal').modal('hide');
+  });
+});
+</script>
+
+<h2>Filters</h2>
+
+<form method="get">
+
+<div class="ui input">
+  <input name="state" type="text" placeholder="Name of your State" value="{{ stateName or '' }}">
+</div>
+
+<div class="ui input">
+  <input name="district" type="text" placeholder="Name of your district" value="{{ districtName or '' }}">
+</div>
+
+<div class="ui checkbox">
+  <input name="Above_45" type="checkbox" {% if age %}checked="checked"{% endif %}>
+  <label>Below 45</label>
+</div>
+
+<div class="ui checkbox">
+  <input name="Vaccine_Cost" type="checkbox" {% if vaccine_cost %}checked="checked"{% endif %}>
+  <label>Free Slot</label>
+</div>
+
+<button type="submit" class="ui button primary">Filter</button>
+
+</form>
+
+
+
+<table class="ui celled table">
+  <thead>
+    <tr>
+      <th>State Name</th>
+      <th>District Name</th>
+      <th>Center Name</th>
+      <th>Number of Slots</th>
+      <th>Type of Vaccine</th>
+      <th>Minimum Age Limit</th>
+      <th>Cost of Vaccine</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for vaccine in vaccineslots %}
+    <tr>
+      <td>{{ vaccine.state_name }}</td>
+      <td>{{ vaccine.district_name }}</td>
+      <td>{{ vaccine.center_name }}</td>
+      <td>{{ vaccine.number_of_slots }}</td>
+      <td>{{ vaccine.vaccine_name }}</td>
+      <td>{{ vaccine.age_limit }}</td>
+      <td>{{ vaccine.vaccine_cost }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+{% endblock %}
