@@ -1,0 +1,9 @@
+async-exit-stack
+async-generator
+configparser
+fastapi
+requests
+psycopg2-binary
+SQLAlchemy
+urllib3
+uvicorn
